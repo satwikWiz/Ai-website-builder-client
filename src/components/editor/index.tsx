@@ -6,9 +6,9 @@ import { EyeOff } from 'lucide-react'
 import React, { useEffect } from 'react'
 import Recursive from './funnel-editor-components/recursive'
 
-type Props = { liveMode?: boolean }
+type Props = { liveMode?: boolean; hidePreviewIcon?: boolean }
 
-const FunnelEditor = ({ liveMode }: Props) => {
+const FunnelEditor = ({ liveMode, hidePreviewIcon = false }: Props) => {
   const { dispatch, state } = useEditor()
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const FunnelEditor = ({ liveMode }: Props) => {
       style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}
       onClick={handleClick}
     >
-      {state.editor.previewMode && state.editor.liveMode && (
+      {state.editor.previewMode && state.editor.liveMode && !hidePreviewIcon && (
         <Button
           variant={'ghost'}
           size={'icon'}

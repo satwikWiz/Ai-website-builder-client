@@ -19,11 +19,13 @@ const API_URL = typeof window !== 'undefined'
 export default function SimpleEditor({ 
   variantId, 
   initialElements,
-  previewMode: initialPreviewMode = false
+  previewMode: initialPreviewMode = false,
+  hidePreviewIcon = false
 }: { 
   variantId: string
   initialElements: any[]
   previewMode?: boolean
+  hidePreviewIcon?: boolean
 }) {
   const { dispatch, state } = useEditor()
 
@@ -65,7 +67,10 @@ export default function SimpleEditor({
   }
 
   return (
-    <div className="h-screen flex flex-col relative bg-gradient-to-br from-background via-background to-muted/20">
+    <div className={clsx(
+      "h-screen flex flex-col relative",
+      !state.editor.previewMode ? "bg-gradient-to-br from-background via-background to-muted/20" : "bg-transparent"
+    )}>
       {/* Modern Header with Glass Effect - Hidden in preview mode */}
       {!state.editor.previewMode && (
       <div className="bg-card/80 backdrop-blur-xl border-b border-border/50 shadow-lg shadow-black/5 p-4 flex justify-between items-center z-50 sticky top-0">
@@ -181,13 +186,16 @@ export default function SimpleEditor({
       </div>
       )}
 
-      <div className="flex-1 overflow-hidden bg-gradient-to-br from-muted/20 via-background to-muted/10 flex relative">
+      <div className={clsx(
+        "flex-1 overflow-hidden flex relative",
+        !state.editor.previewMode ? "bg-gradient-to-br from-muted/20 via-background to-muted/10" : "bg-transparent"
+      )}>
         {/* Editor Canvas Area - Shrinks when sidebar is open */}
         <div className={clsx(
-          "overflow-auto p-8 transition-all duration-300 flex items-start justify-center",
-          !state.editor.previewMode ? "w-[calc(100%-420px)]" : "w-full"
+          "overflow-auto transition-all duration-300 flex items-start justify-center",
+          !state.editor.previewMode ? "w-[calc(100%-420px)] p-8" : "w-full p-0"
         )}>
-          <FunnelEditor />
+          <FunnelEditor hidePreviewIcon={hidePreviewIcon} />
         </div>
         
         {/* Modern Sidebar */}

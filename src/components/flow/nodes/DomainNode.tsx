@@ -65,7 +65,19 @@ function DomainNode({ id, data }: NodeProps) {
   }
 
   const handleView = () => {
-    if (nodeData.variantId) {
+    if (nodeData.domain && localDomain) {
+      // Get the base domain from environment or use default
+      const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN || 'wizcommerce.vercel.app'
+      const isLocal = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+      
+      // Construct subdomain URL
+      const subdomainUrl = isLocal 
+        ? `http://${localDomain}.localhost:3000`
+        : `https://${localDomain}.${baseDomain}`
+      
+      window.open(subdomainUrl, '_blank')
+    } else if (nodeData.variantId) {
+      // Fallback to preview mode if no domain
       window.open(`/editor/${nodeData.variantId}?preview=true`, '_blank')
     }
   }
