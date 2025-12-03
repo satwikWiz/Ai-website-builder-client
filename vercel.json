@@ -1,9 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/subdomain/:subdomain*",
-      "destination": "/subdomain/:subdomain*"
-    }
-  ]
-}
-
