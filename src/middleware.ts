@@ -11,6 +11,9 @@ export function middleware(request: NextRequest) {
     url.pathname.startsWith('/_next') ||
     url.pathname.startsWith('/static') ||
     url.pathname.startsWith('/subdomain') ||
+    url.pathname.startsWith('/flow') ||
+    url.pathname.startsWith('/editor') ||
+    url.pathname.startsWith('/variants') ||
     url.pathname.includes('.')
   ) {
     return NextResponse.next()
@@ -20,14 +23,17 @@ export function middleware(request: NextRequest) {
   // Format: subdomain.wizcommerce.vercel.app or subdomain.localhost:3000
   const parts = hostname.split('.')
   
+  // Main domain names to exclude from subdomain routing
+  const mainDomains = ['wizcommerce', 'www', 'app', 'localhost']
+  
   // Check if we have a subdomain (more than 2 parts for vercel.app or localhost:3000)
   const hasSubdomain = parts.length > 2 || (parts.length === 2 && parts[1].includes('localhost'))
   
   if (hasSubdomain) {
     const subdomain = parts[0]
     
-    // Skip if it's www, app, or main domain indicators
-    if (subdomain && subdomain !== 'www' && subdomain !== 'app' && subdomain !== 'localhost') {
+    // Only route to subdomain page if it's not a main domain name
+    if (subdomain && !mainDomains.includes(subdomain.toLowerCase())) {
       // Rewrite to subdomain page
       url.pathname = `/subdomain/${subdomain}`
       return NextResponse.rewrite(url)
