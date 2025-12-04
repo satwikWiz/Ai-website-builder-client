@@ -72,7 +72,7 @@ function DomainNode({ id, data }: NodeProps) {
       
       // Construct subdomain URL
       const subdomainUrl = isLocal 
-        ? `http://${localDomain}.localhost:3000`
+        ? `http://${localDomain}.localhost:4000`
         : `https://${localDomain}.${baseDomain}`
       
       window.open(subdomainUrl, '_blank')

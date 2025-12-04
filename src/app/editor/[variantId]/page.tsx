@@ -108,10 +108,55 @@ export default function EditorPage() {
     )
   }
 
+  const subdomainUrl = getSubdomainUrl()
+
   return (
-    <EditorProvider>
-      <SimpleEditor variantId={variantId} initialElements={variant.elements} previewMode={isPreview} />
-    </EditorProvider>
+    <div className="relative">
+      {/* Subdomain Link Banner */}
+      {subdomainUrl && (
+        <div className="bg-muted/50 border-b px-4 py-2 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <span className="text-sm text-muted-foreground whitespace-nowrap">Subdomain:</span>
+            <code className="text-sm bg-background px-2 py-1 rounded border flex-1 truncate">
+              {subdomainUrl}
+            </code>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCopyLink}
+              className="h-8"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-3 w-3 mr-1" />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Copy className="h-3 w-3 mr-1" />
+                  Copy
+                </>
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleOpenLink}
+              className="h-8"
+            >
+              <ExternalLink className="h-3 w-3 mr-1" />
+              Open
+            </Button>
+          </div>
+        </div>
+      )}
+      
+      <EditorProvider>
+        <SimpleEditor variantId={variantId} initialElements={variant.elements} previewMode={isPreview} />
+      </EditorProvider>
+    </div>
   )
 }
 
