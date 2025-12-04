@@ -246,14 +246,38 @@ export default function FlowEditor() {
 
           const variantsData = await variantsResponse.json()
           
+          // Log debug info if available
+          if (variantsData.debug) {
+            console.log(`[${variantsData.debug.requestId}] Debug info:`, variantsData.debug)
+            if (variantsData.error) {
+              console.error(`[${variantsData.debug.requestId}] Error:`, variantsData.error)
+              console.error(`[${variantsData.debug.requestId}] Error details:`, variantsData.errorDetails)
+            }
+          }
+          
+          // Show warning/error if fallback was used
+          if (variantsData.warning || variantsData.error) {
+            const message = variantsData.error || variantsData.warning
+            toast.warning(message, {
+              description: variantsData.debug?.generationErrors?.[0]?.userMessage || 'Check console for details',
+              duration: 10000
+            })
+          }
+          
           // Update node with success status and variant IDs
           updateNodeData(domainNode.id, {
-            status: 'success',
+            status: variantsData.error ? 'error' : 'success',
             variants: variantsData.variants || [],
             variantId: variantsData.variants?.[0]?.id || null,
+            error: variantsData.error || null,
+            debug: variantsData.debug || null,
           })
 
-          return { domain: (domainNode.data as any).domain, success: true }
+          return { 
+            domain: (domainNode.data as any).domain, 
+            success: !variantsData.error,
+            error: variantsData.error || null
+          }
         } catch (error: any) {
           updateNodeData(domainNode.id, {
             status: 'error',
